@@ -2,7 +2,7 @@ import numpy as np
 
 
 def split(train_agg, ratio):
-    process_list = train_agg.process_id.unique()
+    process_list = train_agg.index.unique().values
     np.random.seed(7)
     np.random.shuffle(process_list)
     train_ix = process_list[:int(len(process_list) * ratio)]

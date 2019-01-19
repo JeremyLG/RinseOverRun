@@ -29,29 +29,13 @@ def prepare_features_dico(df):
     return dico
 
 
-def prep_all_features(train_set):
-    d_set = train_set.copy()
+def prep_all_features(data):
+    d_set = data.copy()
     d_set["phase_"] = d_set["phase_"].str.replace("final_rinse", "")
     dd = d_set.set_index(['phase'], append=True).unstack()
     dd.columns = dd.columns.map('_'.join)
-    dd["target"] = dd[["final_rinse_total_turbidity_liter_acid",
-                       "final_rinse_total_turbidity_liter_caustic",
-                       "final_rinse_total_turbidity_liter_intermediate_rinse",
-                       "final_rinse_total_turbidity_liter_pre_rinse"]].max(axis=1)
     dd["phase_"] = dd[["phase__acid", "phase__caustic", "phase__intermediate_rinse",
-                       "phase__pre_rinse"]].apply(lambda x: x.any(), raw=True, axis=1)
-    dd.drop(["final_rinse_total_turbidity_liter_acid",
-             "final_rinse_total_turbidity_liter_caustic",
-             "final_rinse_total_turbidity_liter_intermediate_rinse",
-             "final_rinse_total_turbidity_liter_pre_rinse",
-             "phase__acid", "phase__caustic",
-             "phase__intermediate_rinse", "phase__pre_rinse"],
+                       "phase__pre_rinse"]].apply(lambda x: x.any(), axis=1)
+    dd.drop(["phase__acid", "phase__caustic", "phase__intermediate_rinse", "phase__pre_rinse"],
             inplace=True, axis=1)
     return dd
-
-
-def process(train_set, validation_set):
-    train = prep_all_features(train_set)
-    valid = prep_all_features(validation_set)
-    train.to_csv("processed/train.csv")
-    valid.to_csv("processed/valid.csv")
