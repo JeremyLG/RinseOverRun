@@ -82,9 +82,9 @@ df["process_id"] = test.index.unique().values
 df.set_index("process_id", inplace=True)
 df.to_csv("data/processed/preds.csv")
 tr = pd.read_csv("data/raw/train_labels.csv", index_col=0)
-tr.head()
-tr.hist()
-df.hist()
+tr[tr < 2e7].hist(bins=25)
+df[df < 2e7].hist(bins=25)
+
 
 def plot():
     train_balanced, test = read()
